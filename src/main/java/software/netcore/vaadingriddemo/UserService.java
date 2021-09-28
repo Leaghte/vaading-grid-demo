@@ -1,8 +1,6 @@
 package software.netcore.vaadingriddemo;
 
 import com.github.javafaker.Faker;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -17,7 +15,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-@RequiredArgsConstructor
 public class UserService implements InitializingBean {
 
     private static final int USERS_LIMIT = 1000;
@@ -25,24 +22,29 @@ public class UserService implements InitializingBean {
 
     private final AtomicBoolean running = new AtomicBoolean(false);
 
-    @NonNull
     private final ApplicationEventPublisher eventPublisher;
-    @NonNull
     private final UserRepository repository;
+
+    public UserService(ApplicationEventPublisher eventPublisher,
+                       UserRepository repository) {
+        this.eventPublisher = eventPublisher;
+        this.repository = repository;
+    }
 
     @Override
     public void afterPropertiesSet() {
         IntStream.rangeClosed(1, USERS_LIMIT)
-                .forEach(value -> repository
-                        .save(User.builder()
-                                .firstname(FAKER.name().firstName())
-                                .lastname(FAKER.name().lastName())
-                                .username(FAKER.name().username())
-                                .online(FAKER.bool().bool())
-                                .build()));
+                .forEach(value -> {
+                    User user = new User();
+                    user.setFirstname(FAKER.name().firstName());
+                    user.setLastname(FAKER.name().lastName());
+                    user.setUsername(FAKER.name().username());
+                    user.setOnline(FAKER.bool().bool());
+                    repository.save(user);
+                });
     }
 
-    public Page<User> listUsers(@NonNull Pageable pageable) {
+    public Page<User> listUsers(Pageable pageable) {
         return repository.findAll(pageable);
     }
 

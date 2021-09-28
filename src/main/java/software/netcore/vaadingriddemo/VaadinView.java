@@ -10,8 +10,6 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.components.grid.MultiSelectionModel;
 import com.vaadin.ui.components.grid.MultiSelectionModelImpl;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.vaadin.artur.spring.dataprovider.PageableDataProvider;
@@ -25,15 +23,17 @@ import org.vaadin.viritin.layouts.MVerticalLayout;
 import java.util.List;
 
 @SpringView(name = "")
-@RequiredArgsConstructor
 public class VaadinView extends MVerticalLayout implements View {
 
-    @NonNull
     private final transient UserService service;
-    @NonNull
     private final transient EventBus.ApplicationEventBus eventBus;
-
     private Grid<User> grid;
+
+    public VaadinView(UserService service,
+                      EventBus.ApplicationEventBus eventBus) {
+        this.service = service;
+        this.eventBus = eventBus;
+    }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
@@ -94,7 +94,7 @@ public class VaadinView extends MVerticalLayout implements View {
     }
 
     @EventBusListenerMethod(scope = EventScope.APPLICATION)
-    public void onUserChanged(@NonNull UserChangedEvent event) {
+    public void onUserChanged(UserChangedEvent event) {
         getUI().access(() ->
                 grid.getDataProvider().refreshItem(event.getUser()));
     }

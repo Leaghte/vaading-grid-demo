@@ -1,16 +1,9 @@
 package software.netcore.vaadingriddemo;
 
-import lombok.*;
-
 import javax.persistence.*;
 import java.util.Objects;
 
-@Getter
-@Setter
 @Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "user")
 public class User {
 
@@ -30,6 +23,46 @@ public class User {
 
     @Column
     private boolean online;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
 
     @Override
     public boolean equals(Object o) {
